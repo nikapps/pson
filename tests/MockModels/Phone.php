@@ -1,9 +1,15 @@
 <?php
 namespace Nikapps\PsonTests\MockModels;
 
+use Nikapps\Pson\Traits\ClassHelper;
+
 class Phone
 {
     protected $number;
+
+    protected $type = "Other";
+
+    use ClassHelper;
 
     /**
      * @return mixed
@@ -21,4 +27,19 @@ class Phone
         $this->number = $number;
     }
 
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 } 

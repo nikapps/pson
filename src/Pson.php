@@ -168,8 +168,12 @@ class Pson
 
             $jsonKey = $this->getJsonKeyName($property);
 
-            if ($this->isStrict() && !isset($json[$jsonKey])) {
-                throw new NotFoundJsonKeyException("key $jsonKey is not exist");
+            if (!isset($json[$jsonKey])) {
+                if ($this->isStrict()) {
+                    throw new NotFoundJsonKeyException("key $jsonKey is not exist");
+                } else {
+                    continue;
+                }
             }
 
             $jsonValue = $this->getJsonValue($json, $jsonKey);
@@ -319,6 +323,10 @@ class Pson
      */
     protected function createSingleObject(PsonType $psonType, $jsonValue)
     {
+
+        if (is_null($jsonValue)) {
+            return null;
+        }
 
         $singleObj = $this->fromJson(
             $psonType->getClassType(),

@@ -1,5 +1,6 @@
 # Created by .gitignore support plugin (hsz.mobi)
-tests/test.php
+_tests/
 composer.lock
 vendor/
 .idea/
+tests/_output/*

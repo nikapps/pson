@@ -14,7 +14,7 @@ class Person
     /**
      * name
      *
-     * @SerializedName("FULL_NAME")
+     * @SerializedName("full_name")
      * @var string
      */
     protected $name;
@@ -22,7 +22,7 @@ class Person
     /**
      * email
      *
-     * @SerializedName("EMAILS")
+     * @SerializedName("emails")
      * @PsonType("Nikapps\PsonTests\MockModels\Email[]")
      * @var Email[]
      */
@@ -35,20 +35,11 @@ class Person
     protected $phone;
 
     /**
-     * @return string
+     * @Transient
+     * @var mixed
      */
-    public function getEmails()
-    {
-        return $this->emails;
-    }
+    protected $internalObj = 'internal';
 
-    /**
-     * @param string $emails
-     */
-    public function setEmails($emails)
-    {
-        $this->emails = $emails;
-    }
 
     /**
      * @return string
@@ -67,7 +58,23 @@ class Person
     }
 
     /**
-     * @return mixed
+     * @return Email[]
+     */
+    public function getEmails()
+    {
+        return $this->emails;
+    }
+
+    /**
+     * @param Email[] $emails
+     */
+    public function setEmails($emails)
+    {
+        $this->emails = $emails;
+    }
+
+    /**
+     * @return Phone
      */
     public function getPhone()
     {
@@ -75,13 +82,27 @@ class Person
     }
 
     /**
-     * @param mixed $phone
+     * @param Phone $phone
      */
     public function setPhone($phone)
     {
         $this->phone = $phone;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getInternalObj()
+    {
+        return $this->internalObj;
+    }
 
+    /**
+     * @param mixed $internalObj
+     */
+    public function setInternalObj($internalObj)
+    {
+        $this->internalObj = $internalObj;
+    }
 
 } 
