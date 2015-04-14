@@ -1,0 +1,29 @@
+{
+    "name": "nikapps/pson",
+    "description": "Pson is Gson for PHP! Json deserializer and serializer",
+    "require": {
+        "php": ">=5.4.0",
+        "doctrine/annotations": "~1.2"
+    },
+    "require-dev": {
+        "codeception/codeception": "~2.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ali Borhani",
+            "email": "aliborhani1@gmail.com"
+        },
+        {
+            "name": "Hossein Moradgholi",
+            "email": "h.moradgholi@icloud.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Nikapps\\Pson\\": "src/",
+            "Nikapps\\PsonTests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable"
+}
