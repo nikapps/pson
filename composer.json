@@ -1,6 +1,6 @@
 {
     "name": "nikapps/pson",
-    "description": "Pson is Gson for PHP! Json deserializer and serializer",
+    "description": "Pson is Gson for PHP! a Json deserializer and serializer for PHP",
     "require": {
         "php": ">=5.4.0",
         "doctrine/annotations": "~1.2"
