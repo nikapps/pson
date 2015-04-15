@@ -60,6 +60,12 @@ class PsonDeserializingTest extends \Codeception\TestCase\Test
         }
     ';
 
+    protected $scalarTypeConvertPerson = '
+        {
+             "age": 18.5
+        }
+    ';
+
 
     protected $adminPersonJson = '
         {
@@ -308,6 +314,22 @@ class PsonDeserializingTest extends \Codeception\TestCase\Test
         $person = $pson->fromJson(Person::getClass(), $this->personJson);
 
         $I->assertEquals($person->getPhone()->getType(), "Other");
+
+    }
+
+    // test deserializing with default value
+    public function testDeserializingWithScalarConvert()
+    {
+        $I = $this->tester;
+        $pson = new Pson();
+
+        /**
+         * @var Person $person
+         */
+        $person = $pson->fromJson(Person::getClass(), $this->scalarTypeConvertPerson);
+
+        $I->assertTrue(is_int($person->getAge()));
+        $I->assertEquals($person->getAge(), 18);
 
     }
 

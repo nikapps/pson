@@ -15,7 +15,7 @@ class PsonType
      */
     public $type;
 
-    protected $scalarTypes = [
+    protected $primitiveTypes = [
         'bool',
         'boolean',
         'int',
@@ -23,7 +23,9 @@ class PsonType
         'float',
         'double',
         'string',
-        'number'
+        'null',
+        'array',
+        'object'
     ];
 
     /**
@@ -59,13 +61,13 @@ class PsonType
     }
 
     /**
-     * finds whether type is a scalar
+     * finds whether type is a primitive
      *
      * @return bool
      */
-    public function isTypeScalar()
+    public function isPrimitiveType()
     {
-        return in_array(strtolower($this->type), $this->scalarTypes);
+        return in_array(strtolower($this->type), $this->primitiveTypes);
     }
 
 

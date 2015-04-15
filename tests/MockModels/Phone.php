@@ -5,6 +5,7 @@ use Nikapps\Pson\Traits\ClassHelper;
 
 class Phone
 {
+
     protected $number;
 
     protected $type = "Other";

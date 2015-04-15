@@ -35,6 +35,12 @@ class Person
     protected $phone;
 
     /**
+     * @PsonType("integer");
+     * @var int
+     */
+    protected $age;
+
+    /**
      * @Transient
      * @var mixed
      */
@@ -103,6 +109,22 @@ class Person
     public function setInternalObj($internalObj)
     {
         $this->internalObj = $internalObj;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAge()
+    {
+        return $this->age;
+    }
+
+    /**
+     * @param int $age
+     */
+    public function setAge($age)
+    {
+        $this->age = $age;
     }
 
 } 

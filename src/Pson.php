@@ -9,6 +9,7 @@ use Nikapps\Pson\Annotations\Expose;
 use Nikapps\Pson\Annotations\PsonType;
 use Nikapps\Pson\Annotations\SerializedName;
 use Nikapps\Pson\Annotations\Transient;
+use Nikapps\Pson\Exception\InvalidTypeConversionException;
 use Nikapps\Pson\Exception\NotFoundJsonKeyException;
 use ReflectionClass;
 use ReflectionObject;
@@ -22,6 +23,13 @@ class Pson
      * @var boolean
      */
     protected $strict = false;
+
+    /**
+     * true: if value is null skip it
+     *
+     * @var boolean
+     */
+    protected $skipNull = true;
 
     /**
      * @var AnnotationReader
@@ -79,8 +87,26 @@ class Pson
     }
 
     /**
+     * @return boolean
+     */
+    public function isSkipNull()
+    {
+        return $this->skipNull;
+    }
+
+    /**
+     * @param boolean $skipNull
+     */
+    public function setSkipNull($skipNull)
+    {
+        $this->skipNull = $skipNull;
+    }
+
+
+    /**
      * @param object $classInstance
      * @param bool $returnArray = false
+     * @throws InvalidTypeConversionException
      * @return string|array
      */
     public function toJson($classInstance, $returnArray = false)
@@ -109,25 +135,42 @@ class Pson
             $keyName = $this->getJsonKeyName($property);
 
             $property->setAccessible(true);
+            $propertyValue = $property->getValue($classInstance);
+
+            if($this->isSkipNull() && is_null($propertyValue)){
+                continue;
+            }
 
             $psonType = $this->getType($property);
 
-            if (!is_null($psonType) && !$psonType->isTypeScalar()) {
-                //pson type is defined
-                if ($psonType->isArray()) {
-                    $jsonValue = $this->convertObjectsToJson(
-                        $property,
-                        $classInstance
-                    );
+            if (!is_null($psonType)) {
+                //if pson type is defined
+
+                if ($psonType->isPrimitiveType()) {
+                    $jsonValue = $propertyValue;
+                    try {
+                        settype($jsonValue, $psonType->getClassType());
+                    } catch (\Exception $e) {
+                        if ($this->isStrict()) {
+                            throw new InvalidTypeConversionException;
+                        }
+                    }
                 } else {
-                    $jsonValue = $this->convertSingleObjectToJson(
-                        $property,
-                        $classInstance
-                    );
+                    if ($psonType->isArray()) {
+                        $jsonValue = $this->convertObjectsToJson(
+                            $property,
+                            $classInstance
+                        );
+                    } else {
+                        $jsonValue = $this->convertSingleObjectToJson(
+                            $property,
+                            $classInstance
+                        );
+                    }
                 }
             } else {
                 //pson type is not defined
-                $jsonValue = $property->getValue($classInstance);
+                $jsonValue = $propertyValue;
             }
 
             $output[$keyName] = $jsonValue;
@@ -144,6 +187,7 @@ class Pson
     /**
      * @param string $class
      * @param string|array $json
+     * @throws InvalidTypeConversionException
      * @throws NotFoundJsonKeyException
      * @return object
      */
@@ -178,20 +222,35 @@ class Pson
 
             $jsonValue = $this->getJsonValue($json, $jsonKey);
 
+            if($this->isSkipNull() && is_null($jsonValue)){
+                continue;
+            }
+
             $psonType = $this->getType($property);
 
-            if (!is_null($psonType) && !$psonType->isTypeScalar()) {
+            if (!is_null($psonType)) {
                 //if pson type is defined
-                if ($psonType->isArray()) {
-                    $value = $this->createArrayOfObjects(
-                        $psonType,
-                        $jsonValue
-                    );
+                if ($psonType->isPrimitiveType()) {
+                    try {
+                        settype($jsonValue, $psonType->getClassType());
+                    } catch (\Exception $e) {
+                        if ($this->isStrict()) {
+                            throw new InvalidTypeConversionException;
+                        }
+                    }
+                    $value = $jsonValue;
                 } else {
-                    $value = $this->createSingleObject(
-                        $psonType,
-                        $jsonValue
-                    );
+                    if ($psonType->isArray()) {
+                        $value = $this->createArrayOfObjects(
+                            $psonType,
+                            $jsonValue
+                        );
+                    } else {
+                        $value = $this->createSingleObject(
+                            $psonType,
+                            $jsonValue
+                        );
+                    }
                 }
             } else {
                 //pson type is not defined
