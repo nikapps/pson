@@ -70,5 +70,13 @@ class PsonType
         return in_array(strtolower($this->type), $this->primitiveTypes);
     }
 
+    /**
+     * whether array of primitives. (such as string[], int[], etc)
+     *
+     * @return bool
+     */
+    public function isArrayOfPrimitive(){
+        return $this->isArray() && in_array(strtolower($this->getClassType()), $this->primitiveTypes);
+    }
 
 } 

@@ -46,7 +46,7 @@ class Pson
         AnnotationRegistry::registerFile(__DIR__ . '/Annotations/Transient.php');
 
         if (!$reader) {
-            $this->annotationReader = new AnnotationReader();
+            $this->annotationReader = new AnenotationReader();
         } else {
             $this->annotationReader = $reader;
         }
@@ -155,6 +155,15 @@ class Pson
                             throw new InvalidTypeConversionException;
                         }
                     }
+                } else if($psonType->isArrayOfPrimitive()){
+
+                    $jsonValue = [];
+
+                    foreach($propertyValue as $value){
+                        settype($value, $psonType->getClassType());
+                        $jsonValue[] = $value;
+                    }
+
                 } else {
                     if ($psonType->isArray()) {
                         $jsonValue = $this->convertObjectsToJson(
@@ -416,6 +425,7 @@ class Pson
         }
 
         foreach ($values as $value) {
+
             $jsonArray[] = $this->toJson(
                 $value,
                 true
